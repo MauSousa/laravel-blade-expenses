@@ -64,3 +64,15 @@ describe('store pages', function () {
         $response->assertOk();
     });
 });
+
+test('store can be created', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user);
+
+    $response = $this->post(route('store.store'), [
+        'name' => 'Test Store',
+    ]);
+
+    $response->assertRedirect(route('store.index'));
+});
