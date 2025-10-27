@@ -41,7 +41,7 @@ describe('store pages', function () {
 
         $this->actingAs($user);
 
-        $response = $this->get(route('stores.index'));
+        $response = $this->get(route('store.index'));
         $response->assertOk();
     });
 
@@ -50,7 +50,7 @@ describe('store pages', function () {
 
         $this->actingAs($user);
 
-        $response = $this->get(route('stores.create'));
+        $response = $this->get(route('store.create'));
         $response->assertOk();
     });
 
@@ -60,7 +60,7 @@ describe('store pages', function () {
 
         $this->actingAs($user);
 
-        $response = $this->get(route('stores.edit', $store));
+        $response = $this->get(route('store.edit', $store));
         $response->assertOk();
     });
 });
