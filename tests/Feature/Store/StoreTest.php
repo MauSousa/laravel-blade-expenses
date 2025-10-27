@@ -20,18 +20,47 @@ test('to array', function () {
         ]);
 });
 
-it('belongs to a user', function () {
-    $store = Store::factory()->create();
+describe('eloquent relations', function () {
+    test('store belongs to a user', function () {
+        $store = Store::factory()->create();
 
-    expect($store->user)->toBeInstanceOf(User::class);
+        expect($store->user)->toBeInstanceOf(User::class);
+    });
+
+    test('user has many stores', function () {
+        $user = User::factory()->create();
+        Store::factory()->create(['user_id' => $user->id]);
+
+        expect($user->stores)->toHaveCount(1);
+    });
 });
 
-test('user can view store page', function () {
-    $user = User::factory()->create();
+describe('store pages', function () {
+    test('user can view index store page', function () {
+        $user = User::factory()->create();
 
-    $this->actingAs($user);
+        $this->actingAs($user);
 
-    $response = $this->get(route('stores.index'));
-    $response->assertOk();
+        $response = $this->get(route('stores.index'));
+        $response->assertOk();
+    });
 
+    test('user can view create store page', function () {
+        $user = User::factory()->create();
+
+        $this->actingAs($user);
+
+        $response = $this->get(route('stores.create'));
+        $response->assertOk();
+    });
+
+    test('user can view edit store page', function () {
+        $user = User::factory()->create();
+        $store = Store::factory()->create();
+
+        $this->actingAs($user);
+
+        $response = $this->get(route('stores.edit', $store));
+        $response->assertOk();
+    });
 });
