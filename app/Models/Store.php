@@ -13,6 +13,11 @@ class Store extends Model
     /** @use HasFactory<\Database\Factories\StoreFactory> */
     use HasFactory;
 
+    protected $fillable = [
+        'user_id',
+        'name',
+    ];
+
     /**
      * return the user that owns the store
      *
