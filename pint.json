@@ -1,0 +1,23 @@
+{
+  "preset": "laravel",
+  "rules": {
+    "declare_strict_types": true,
+    "fully_qualified_strict_types": true,
+    "global_namespace_import": {
+      "import_classes": true,
+      "import_constants": true,
+      "import_functions": true
+    },
+    "mb_str_functions": true,
+    "modernize_types_casting": true,
+    "new_with_parentheses": false,
+    "no_superfluous_elseif": true,
+    "no_useless_else": true,
+    "no_multiple_statements_per_line": true,
+    "lowercase_keywords": true,
+    "lowercase_static_reference": true,
+    "array_push": true,
+    "strict_comparison": true,
+    "backtick_to_shell_exec": true
+  }
+}
