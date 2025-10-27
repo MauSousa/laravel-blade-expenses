@@ -6,8 +6,8 @@ use App\Http\Controllers\StoreController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified'])
-    ->prefix('stores')
-    ->name('stores.')
+    ->prefix('store')
+    ->name('store.')
     ->group(function () {
         Route::get('/', [StoreController::class, 'index'])->name('index');
         Route::get('/create', [StoreController::class, 'create'])->name('create');
