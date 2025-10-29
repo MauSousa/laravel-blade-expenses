@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Actions\Store\CreateStore;
+use App\Actions\Store\UpdateStore;
 use App\Http\Requests\StoreStoreRequest;
 use App\Http\Requests\UpdateStoreRequest;
 use App\Models\Store;
@@ -43,27 +44,23 @@ class StoreController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(Store $store): void
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Store $store): void
+    public function edit(Store $store): View
     {
-        //
+        return view('store.edit', [
+            'store' => $store,
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateStoreRequest $request, Store $store): void
+    public function update(UpdateStoreRequest $request, Store $store, UpdateStore $action): RedirectResponse
     {
-        //
+        $action->handle($request->user(), $store, $request->validated());
+
+        return to_route('store.edit', $store);
     }
 
     /**
