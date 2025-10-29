@@ -76,3 +76,31 @@ test('store can be created', function () {
 
     $response->assertRedirect(route('store.index'));
 });
+
+test('store can be updated by user who created it', function () {
+    $user = User::factory()->create();
+    $store = Store::factory()->create(['user_id' => $user->id]);
+
+    $this->actingAs($user);
+
+    $response = $this->patch(route('store.update', $store), [
+        'name' => 'Test Store',
+    ]);
+
+    $response->assertRedirect(route('store.edit', $store));
+});
+
+test('store can not be updated if not created by user', function () {
+    $user = User::factory()->create();
+    $fakeUser = User::factory()->create();
+
+    $store = Store::factory()->create(['user_id' => $user->id]);
+
+    $this->actingAs($fakeUser);
+
+    $response = $this->patch(route('store.update', $store), [
+        'name' => 'Test Store',
+    ]);
+
+    $response->assertStatus(403);
+});
