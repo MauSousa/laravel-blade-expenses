@@ -38,7 +38,7 @@ class StorePolicy
      */
     public function update(User $user, Store $store): bool
     {
-        return false;
+        return $user->id === $store->user_id;
     }
 
     /**
