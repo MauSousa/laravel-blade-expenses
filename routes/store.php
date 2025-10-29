@@ -13,6 +13,6 @@ Route::middleware(['auth', 'verified'])
         Route::get('/create', [StoreController::class, 'create'])->name('create');
         Route::post('/', [StoreController::class, 'store'])->name('store');
         Route::get('/{store}/edit', [StoreController::class, 'edit'])->name('edit');
-        Route::put('/{store}', [StoreController::class, 'update'])->name('update');
+        Route::patch('/{store}', [StoreController::class, 'update'])->name('update');
         Route::delete('/{store}', [StoreController::class, 'destroy'])->name('destroy');
     });
