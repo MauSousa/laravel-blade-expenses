@@ -46,7 +46,7 @@ class StorePolicy
      */
     public function delete(User $user, Store $store): bool
     {
-        return false;
+        return $user->id === $store->user_id;
     }
 
     /**

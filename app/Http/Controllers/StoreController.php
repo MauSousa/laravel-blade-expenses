@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Actions\Store\CreateStore;
+use App\Actions\Store\DeleteStore;
 use App\Actions\Store\UpdateStore;
 use App\Http\Requests\StoreStoreRequest;
 use App\Http\Requests\UpdateStoreRequest;
@@ -66,8 +67,12 @@ class StoreController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Store $store): void
+    public function destroy(Store $store, DeleteStore $action): RedirectResponse
     {
-        //
+        abort_if(request()->user()->cannot('delete', $store), 403);
+
+        $action->handle(request()->user(), $store);
+
+        return to_route('store.index');
     }
 }
