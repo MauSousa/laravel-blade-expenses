@@ -65,42 +65,90 @@ describe('store pages', function () {
     });
 });
 
-test('store can be created', function () {
-    $user = User::factory()->create();
+describe('create store', function () {
+    it('can be created', function () {
+        $user = User::factory()->create();
 
-    $this->actingAs($user);
+        $this->actingAs($user);
 
-    $response = $this->post(route('store.store'), [
-        'name' => 'Test Store',
-    ]);
+        $response = $this->post(route('store.store'), [
+            'name' => 'Test Store',
+        ]);
 
-    $response->assertRedirect(route('store.index'));
+        $response->assertRedirect(route('store.index'));
+    });
+
+    it('can not be created if not logged in', function () {
+        $response = $this->post(route('store.store'), [
+            'name' => 'Test Store',
+        ]);
+
+        $response->assertRedirect(route('login'));
+    });
+
+    it('can not be created if name is not provided', function () {
+        $user = User::factory()->create();
+
+        $this->actingAs($user);
+
+        $response = $this->post(route('store.store'), [
+            'name' => '',
+        ]);
+
+        $response->assertSessionHasErrors('name');
+    });
 });
 
-test('store can be updated by user who created it', function () {
-    $user = User::factory()->create();
-    $store = Store::factory()->create(['user_id' => $user->id]);
+describe('update store', function () {
+    it('can be updated by user who created it', function () {
+        $user = User::factory()->create();
+        $store = Store::factory()->create(['user_id' => $user->id]);
 
-    $this->actingAs($user);
+        $this->actingAs($user);
 
-    $response = $this->patch(route('store.update', $store), [
-        'name' => 'Test Store',
-    ]);
+        $response = $this->patch(route('store.update', $store), [
+            'name' => 'Test Store',
+        ]);
 
-    $response->assertRedirect(route('store.edit', $store));
+        $response->assertRedirect(route('store.edit', $store));
+    });
+
+    test('store can not be updated if not created by user', function () {
+        $user = User::factory()->create();
+        $fakeUser = User::factory()->create();
+
+        $store = Store::factory()->create(['user_id' => $user->id]);
+
+        $this->actingAs($fakeUser);
+
+        $response = $this->patch(route('store.update', $store), [
+            'name' => 'Test Store',
+        ]);
+
+        $response->assertStatus(403);
+    });
 });
 
-test('store can not be updated if not created by user', function () {
-    $user = User::factory()->create();
-    $fakeUser = User::factory()->create();
+describe('delete store', function () {
+    test('user can delete store', function () {
+        $user = User::factory()->create();
+        $store = Store::factory()->create(['user_id' => $user->id]);
 
-    $store = Store::factory()->create(['user_id' => $user->id]);
+        $this->actingAs($user);
 
-    $this->actingAs($fakeUser);
+        $response = $this->delete(route('store.destroy', $store));
+        $response->assertRedirect(route('store.index'));
+    });
 
-    $response = $this->patch(route('store.update', $store), [
-        'name' => 'Test Store',
-    ]);
+    test('user can not delete store if not created by user', function () {
+        $user = User::factory()->create();
+        $fakeUser = User::factory()->create();
 
-    $response->assertStatus(403);
+        $store = Store::factory()->create(['user_id' => $user->id]);
+
+        $this->actingAs($fakeUser);
+
+        $response = $this->delete(route('store.destroy', $store));
+        $response->assertStatus(403);
+    });
 });
