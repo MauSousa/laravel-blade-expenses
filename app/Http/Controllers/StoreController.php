@@ -71,7 +71,7 @@ class StoreController extends Controller
     {
         abort_if(request()->user()->cannot('delete', $store), 403);
 
-        $action->handle(request()->user(), $store);
+        $action->handle($store);
 
         return to_route('store.index');
     }

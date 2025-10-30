@@ -5,17 +5,14 @@ declare(strict_types=1);
 namespace App\Actions\Store;
 
 use App\Models\Store;
-use App\Models\User;
 
 class DeleteStore
 {
     /**
-     * Delete the user's store.
-     *
-     * @param  array<string, mixed>  $data
+     * Delete the store.
      */
-    public function handle(User $user, Store $store): void
+    public function handle(Store $store): void
     {
-        $user->stores()->delete($store);
+        $store->delete();
     }
 }
