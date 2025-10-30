@@ -10,7 +10,7 @@ use App\Models\User;
 class UpdateStore
 {
     /**
-     * Create a new store.
+     * Updates a store.
      *
      * @param  array<string, mixed>  $data
      */
