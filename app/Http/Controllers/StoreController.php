@@ -69,8 +69,6 @@ class StoreController extends Controller
      */
     public function destroy(Store $store, DeleteStore $action): RedirectResponse
     {
-        abort_if(request()->user()->cannot('delete', $store), 403);
-
         $action->handle($store);
 
         return to_route('store.index');
