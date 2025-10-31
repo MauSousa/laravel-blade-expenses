@@ -56,12 +56,24 @@ describe('store pages', function () {
 
     test('user can view edit store page', function () {
         $user = User::factory()->create();
-        $store = Store::factory()->create();
+        $store = Store::factory()->create(['user_id' => $user->id]);
 
         $this->actingAs($user);
 
         $response = $this->get(route('store.edit', $store));
         $response->assertOk();
+    });
+
+    test('user can not view edit store page if not created by user', function () {
+        $user = User::factory()->create();
+        $fakeUser = User::factory()->create();
+
+        $store = Store::factory()->create(['user_id' => $user->id]);
+
+        $this->actingAs($fakeUser);
+
+        $response = $this->get(route('store.edit', $store));
+        $response->assertStatus(403);
     });
 });
 
