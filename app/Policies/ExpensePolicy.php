@@ -34,6 +34,14 @@ class ExpensePolicy
     }
 
     /**
+     * Determine whether the user can edit the model.
+     */
+    public function edit(User $user, Expense $expense): bool
+    {
+        return $user->id === $expense->user_id;
+    }
+
+    /**
      * Determine whether the user can update the model.
      */
     public function update(User $user, Expense $expense): bool
@@ -46,7 +54,7 @@ class ExpensePolicy
      */
     public function delete(User $user, Expense $expense): bool
     {
-        return false;
+        return $user->id === $expense->user_id;
     }
 
     /**
