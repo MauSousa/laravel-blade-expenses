@@ -17,6 +17,7 @@ test('to array', function () {
         'store_id',
         'name',
         'price',
+        'payment_method',
         'created_at',
         'updated_at',
     ]);
@@ -53,5 +54,119 @@ describe('expense pages', function () {
 
         $response = $this->get(route('expense.create'));
         $response->assertOk();
+    });
+});
+
+describe('create expense', function () {
+    test('user can create expense', function () {
+        $user = User::factory()->create();
+        $store = Store::factory()->create(['user_id' => $user->id]);
+
+        $this->actingAs($user);
+
+        $response = $this->post(route('expense.store'), [
+            'store_id' => $store->id,
+            'name' => 'Test Expense',
+            'price' => 100,
+            'payment_method' => 'cash',
+        ]);
+        $response->assertRedirect(route('expense.index'));
+    });
+
+    test('user can not create expense if store does not exist', function () {
+        $user = User::factory()->create();
+
+        $this->actingAs($user);
+
+        $response = $this->post(route('expense.store'), [
+            'store_id' => 123,
+            'name' => 'Test Expense',
+            'price' => 100,
+            'payment_method' => 'cash',
+        ]);
+
+        $response->assertSessionHasErrors('store_id');
+    });
+
+    test('user can not create expense if name is empty', function () {
+        $user = User::factory()->create();
+        $store = Store::factory()->create();
+
+        $this->actingAs($user);
+
+        $response = $this->post(route('expense.store'), [
+            'store_id' => $store->id,
+            'name' => '',
+            'price' => 100,
+            'payment_method' => 'cash',
+        ]);
+
+        $response->assertSessionHasErrors('name');
+    });
+
+    test('user can not create expense if price is empty', function () {
+        $user = User::factory()->create();
+        $store = Store::factory()->create();
+
+        $this->actingAs($user);
+
+        $response = $this->post(route('expense.store'), [
+            'store_id' => $store->id,
+            'price' => 100,
+            'payment_method' => 'cash',
+        ]);
+
+        $response->assertSessionHasErrors('name');
+    });
+
+    test('user can not create expense if price is not a number', function () {
+        $user = User::factory()->create();
+        $store = Store::factory()->create();
+
+        $this->actingAs($user);
+
+        $response = $this->post(route('expense.store'), [
+            'store_id' => $store->id,
+            'name' => 'Test Expense',
+            'price' => 'abc',
+            'payment_method' => 'cash',
+        ]);
+
+        $response->assertSessionHasErrors('price');
+    });
+
+    test('user can not create expense if payment method is empty', function () {
+        $user = User::factory()->create();
+        $store = Store::factory()->create();
+
+        $this->actingAs($user);
+
+        $response = $this->post(route('expense.store'), [
+            'store_id' => $store->id,
+            'name' => 'Test Expense',
+            'price' => 100,
+            'payment_method' => '',
+        ]);
+
+        $response->assertSessionHasErrors('payment_method');
+    });
+
+    test('user can not create expense if store is not created by user', function () {
+        $user = User::factory()->create();
+        $fakeUser = User::factory()->create();
+        $store = Store::factory()->create([
+            'user_id' => $fakeUser->id,
+        ]);
+
+        $this->actingAs($user);
+
+        $response = $this->post(route('expense.store'), [
+            'store_id' => $store->id,
+            'name' => 'Test Expense',
+            'price' => 100,
+            'payment_method' => 'cash',
+        ]);
+
+        $response->assertSessionHasErrors('store_id');
     });
 });
