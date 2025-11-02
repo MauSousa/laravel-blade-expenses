@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Actions\Expenses\CreateExpense;
 use App\Http\Requests\StoreExpenseRequest;
 use App\Http\Requests\UpdateExpenseRequest;
 use App\Models\Expense;
+use Illuminate\Http\RedirectResponse;
 
 class ExpenseController extends Controller
 {
@@ -29,9 +31,11 @@ class ExpenseController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreExpenseRequest $request): void
+    public function store(StoreExpenseRequest $request, CreateExpense $action): RedirectResponse
     {
-        //
+        $action->handle($request->user(), $request->validated());
+
+        return to_route('expense.index');
     }
 
     /**
