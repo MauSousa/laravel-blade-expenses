@@ -18,6 +18,7 @@ class Expense extends Model
         'store_id',
         'name',
         'price',
+        'payment_method',
     ];
 
     /**
