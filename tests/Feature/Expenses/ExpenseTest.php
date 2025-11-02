@@ -55,6 +55,29 @@ describe('expense pages', function () {
         $response = $this->get(route('expense.create'));
         $response->assertOk();
     });
+
+    test('user can view edit expense page', function () {
+        $user = User::factory()->create();
+        $store = Store::factory()->create(['user_id' => $user->id]);
+        $expense = Expense::factory()->create(['store_id' => $store->id, 'user_id' => $user->id]);
+
+        $this->actingAs($user);
+
+        $response = $this->get(route('expense.edit', $expense));
+        $response->assertOk();
+    });
+
+    test('user can not view edit expense page if not the owner', function () {
+        $user = User::factory()->create();
+        $store = Store::factory()->create(['user_id' => $user->id]);
+        $expense = Expense::factory()->create(['store_id' => $store->id, 'user_id' => $user->id]);
+        $fakeUser = User::factory()->create();
+
+        $this->actingAs($fakeUser);
+
+        $response = $this->get(route('expense.edit', $expense));
+        $response->assertStatus(403);
+    });
 });
 
 describe('create expense', function () {
@@ -202,5 +225,45 @@ describe('update expense', function () {
         ]);
 
         $response->assertSessionHasErrors('store_id');
+    });
+});
+
+describe('deleting an expense', function () {
+    test('user can delete an expense', function () {
+        $user = User::factory()->create();
+        $store = Store::factory()->create(['user_id' => $user->id]);
+        $expense = Expense::factory()->create(['store_id' => $store->id, 'user_id' => $user->id]);
+
+        $this->actingAs($user);
+
+        $response = $this->delete(route('expense.destroy', $expense));
+        $response->assertRedirect(route('expense.index'));
+    });
+
+    test('user can not delete an expense if not the owner', function () {
+        $user = User::factory()->create();
+        $store = Store::factory()->create(['user_id' => $user->id]);
+        $expense = Expense::factory()->create(['store_id' => $store->id, 'user_id' => $user->id]);
+        $fakeUser = User::factory()->create();
+
+        $this->actingAs($fakeUser);
+
+        $response = $this->delete(route('expense.destroy', $expense));
+        $response->assertStatus(403);
+    });
+
+    test('user can not delete an expense if store does not exist', function () {
+        $user = User::factory()->create();
+        $fakeUser = User::factory()->create();
+        $store = Store::factory()->create(['user_id' => $user->id]);
+        $expense = Expense::factory()->create([
+            'user_id' => $user->id,
+            'store_id' => $store->id,
+        ]);
+
+        $this->actingAs($fakeUser);
+
+        $response = $this->delete(route('expense.destroy', $expense));
+        $response->assertStatus(403);
     });
 });
