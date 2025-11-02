@@ -170,3 +170,37 @@ describe('create expense', function () {
         $response->assertSessionHasErrors('store_id');
     });
 });
+
+describe('update expense', function () {
+    test('user can update expense', function () {
+        $user = User::factory()->create();
+        $store = Store::factory()->create(['user_id' => $user->id]);
+        $expense = Expense::factory()->create(['store_id' => $store->id, 'user_id' => $user->id]);
+
+        $this->actingAs($user);
+
+        $response = $this->patch(route('expense.update', $expense), [
+            'name' => 'Update Expense',
+            'price' => 1009,
+            'payment_method' => 'cash',
+            'store_id' => $store->id,
+        ]);
+        $response->assertRedirect(route('expense.edit', $expense));
+    });
+
+    test('user can not update expense if store does not exist', function () {
+        $user = User::factory()->create();
+        $expense = Expense::factory()->create(['user_id' => $user->id]);
+
+        $this->actingAs($user);
+
+        $response = $this->patch(route('expense.update', $expense), [
+            'store_id' => 123,
+            'name' => 'Test Expense',
+            'price' => 100,
+            'payment_method' => 'cash',
+        ]);
+
+        $response->assertSessionHasErrors('store_id');
+    });
+});
