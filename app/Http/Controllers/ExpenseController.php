@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Actions\Expenses\CreateExpense;
+use App\Actions\Expenses\DeleteExpense;
 use App\Actions\Expenses\UpdateExpense;
 use App\Http\Requests\StoreExpenseRequest;
 use App\Http\Requests\UpdateExpenseRequest;
@@ -68,8 +69,10 @@ class ExpenseController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Expense $expense): void
+    public function destroy(Expense $expense, DeleteExpense $action): RedirectResponse
     {
-        //
+        $action->handle($expense);
+
+        return to_route('expense.index');
     }
 }
