@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Actions\Expenses\CreateExpense;
+use App\Actions\Expenses\UpdateExpense;
 use App\Http\Requests\StoreExpenseRequest;
 use App\Http\Requests\UpdateExpenseRequest;
 use App\Models\Expense;
@@ -57,9 +58,11 @@ class ExpenseController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateExpenseRequest $request, Expense $expense): void
+    public function update(UpdateExpenseRequest $request, Expense $expense, UpdateExpense $action): RedirectResponse
     {
-        //
+        $action->handle($expense, $request->validated());
+
+        return to_route('expense.edit', $expense);
     }
 
     /**
