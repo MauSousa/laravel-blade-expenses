@@ -19,7 +19,9 @@ return new class extends Migration
             $table->foreignId('store_id')->constrained();
             $table->string('name');
             $table->decimal('price', 8, 2);
+            $table->string('payment_method');
             $table->timestamps();
+            $table->index(['payment_method', 'timestamps']);
         });
     }
 
