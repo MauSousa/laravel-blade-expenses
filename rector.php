@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
+use RectorLaravel\Rector\FuncCall\RemoveDumpDataDeadCodeRector;
+use RectorLaravel\Set\LaravelSetList;
 
 return RectorConfig::configure()
     ->withPaths([
@@ -11,12 +13,13 @@ return RectorConfig::configure()
         __DIR__.'/database',
         __DIR__.'/public',
     ])
-    ->withPreparedSets(
-        deadCode: true,
-        codeQuality: true,
-        codingStyle: true,
-        typeDeclarations: true,
-        privatization: true,
-        earlyReturn: true,
-    )
-    ->withPhpSets();
+    ->withSets([
+        LaravelSetList::LARAVEL_CODE_QUALITY,
+        LaravelSetList::LARAVEL_COLLECTION,
+        LaravelSetList::LARAVEL_FACTORIES,
+        LaravelSetList::LARAVEL_IF_HELPERS,
+        LaravelSetList::LARAVEL_TYPE_DECLARATIONS,
+    ])
+    ->withConfiguredRule(RemoveDumpDataDeadCodeRector::class, [
+        'dd', 'dump', 'var_dump',
+    ]);
