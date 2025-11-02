@@ -25,6 +25,7 @@ class ExpenseFactory extends Factory
             'store_id' => Store::factory(),
             'name' => $this->faker->name(),
             'price' => $this->faker->numberBetween(100, 1000),
+            'payment_method' => $this->faker->randomElement(['cash', 'check', 'credit card']),
         ];
     }
 }
