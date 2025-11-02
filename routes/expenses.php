@@ -12,7 +12,7 @@ Route::middleware(['auth', 'verified'])
         Route::get('/', [ExpenseController::class, 'index'])->name('index');
         Route::get('/create', [ExpenseController::class, 'create'])->name('create');
         Route::post('/', [ExpenseController::class, 'store'])->name('store');
-        Route::get('/{expense}/edit', [ExpenseController::class, 'edit'])->name('edit');
+        Route::get('/{expense}/edit', [ExpenseController::class, 'edit'])->name('edit')->middleware('can:edit,expense');
         Route::patch('/{expense}', [ExpenseController::class, 'update'])->name('update');
-        Route::delete('/{expense}', [ExpenseController::class, 'destroy'])->name('destroy');
+        Route::delete('/{expense}', [ExpenseController::class, 'destroy'])->name('destroy')->middleware('can:delete,expense');
     });
